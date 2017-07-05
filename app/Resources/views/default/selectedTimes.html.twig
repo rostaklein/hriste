@@ -1,0 +1,28 @@
+{% block body %}
+    {% if selectedtimes is empty %}
+        <div class="empty-selected-times">Zatím jste si nevybrali žádný termín a hřiště.</div>
+    {% else %}
+        <div class="selected-table">
+            {% for field in uniqueFields %}
+                <div class="field {{ field.typ }}">
+                    <div class="image-preview">
+                        <div class="image" style="background-image: url('{{ asset('assets/img/'~field.uname~'.jpg') }}')"></div>
+                    </div>
+                    <div class="details">
+                        <div class="field-name">{{ field.name }}</div>
+                        {% for res in selectedtimes | sortbyfield('timeto') if res.field.id == field.id %}
+                            <div class="one-row">
+                                <div class="date"><i class="fa fa-calendar-o"></i> {{ res.date|localizeddate('long', 'none', 'cs') }}</div>
+                                <div class="time"><i class="fa fa-clock-o"></i> {{ res.timefrom|date('H:i') }} - {{ res.timeto|date('H:i') }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+        {% if not hideClearTimes %}
+            <div id="clear-times"><i class="fa fa-times"></i> odstranit všechny časy</div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

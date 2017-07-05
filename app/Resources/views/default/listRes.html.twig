@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="{{ path('listReservations', { 'time': "all" }) }}"><div class="btn btn-default">všechny rezervace</div></a>
+                <a href="{{ path('listReservations', { 'time': "confirmed" }) }}"><div class="btn btn-default">všechny potvrzené rezervace</div></a>
+                <a href="{{ path('listReservations', { 'time': "yesterday" }) }}"><div class="btn btn-default">včerejší rezervace</div></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ render(controller('AppBundle:ListReservation:makeReservationsTable', { 'reservations': reservations })) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

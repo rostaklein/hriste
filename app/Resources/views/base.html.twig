@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Rezervační systém hřišť{% endblock %} | moravacamp.cz</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Rezervace sportovního hřiště MORAVACAMP Mohelnice."/>
+        <meta name="keywords" content="mohelnice sport, hřiště, tenis, volejbal"/>
+        <meta name="author" content="mohelnickesluzby.cz" />
+        <meta name="copyright" content="Rostislav Klein" />
+
+        {% block stylesheets %}
+            <link rel="icon" type="image/png" href="{{ asset('assets/img/fav.png') }}" />
+            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+            <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/iziToast.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/flat-ui.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+    <header>
+        {% block header %}
+            <div class="container branding">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <h3>Rezervační systém sportovních hřišť</h3>
+                    </div>
+                    <div class="col-sm-5">
+                        <span class="user-panel">
+                            {% if app.user %}
+                                <input type="hidden" id="logout-path" value="{{ path('fos_user_security_logout') }}">
+                                <i class="fa fa-user"></i><span>{{ app.user.fname }} {{ app.user.lname }}<span class="divider">|</span> </span><span class="log logout"><i class="fa fa-sign-out"></i> odhlásit</span>
+                            {% else %}
+                            <span data-toggle="modal" data-target="#loginmodal" class="log"><i class="fa fa-user"></i> Přihlásit se</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="container logo-nav">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ path('homepage') }}"><img src="{{ asset('assets/img/moravacamp_logo.svg') }}" class="site-logo" alt="Moravacamp logo"></a>
+                    </div>
+                    <div class="col-md-8">
+                        <nav class="main-nav">
+                            <ul>
+                                <li><a href="{{ path('homepage') }}"><i class="fa fa-pencil"></i> Nová rezervace</a></li>
+                                <li><a href="{{ path('prices') }}">Ceník</a></li>
+                                <li><a href="{{ path('findReservation') }}">Najít rezervaci</a></li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                <li><a href="{{ path('listReservations') }}">Seznam rezervací</a></li>
+                                {% endif %}
+                                <!--<li><a href="#">Kontakt</a></li>-->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </header>
+    <article>
+        {% block body %}
+
+        {% endblock %}
+    </article>
+    <footer>
+
+        <div id="loginmodal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                        <h6 class="modal-title"><i class="fa fa-lock"></i> Přihlásit se</h6>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="login-path" value="{{ path('fos_user_security_check') }}">
+                        <div class="login-popup">
+                            <form method="post" action="{{ path('fos_user_security_check') }}">
+                                <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.refreshToken('authenticate') }}" />
+                                <div class="form-group">
+                                    <input type="text" id="username" name="_username" class="form-control" required="required" placeholder="Váš email"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="password" name="_password" class="form-control" required="required" placeholder="Heslo" />
+                                </div>
+                                <button type="submit" class="btn btn-default login-submit"><i class="fa fa-sign-in"></i> přihlásit se</button>
+                            </form>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <a href="{{ path('hwi_oauth_service_redirect', { 'service': 'facebook' }) }}"><div class="btn btn-default fb"><i class="fa fa-facebook-square"></i><span>přihlásit se Facebookem</span></div></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-md-6">
+                Rezervační systém sportovních hřišť
+            </div>
+            <div class="col-md-6 text-right">
+                <span class="created-by">Vytvořeno:</span>
+                <a href="http://mohelnickesluzby.cz/" target="_blank"><img src="{{ asset('assets/img/moh_sluz.svg') }}" alt="Mohelnické služby" title="Mohelnické služby" class="created-by-img"></a>
+            </div>
+        </div>
+    </footer>
+        {% block javascripts %}
+            <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+            <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('assets/js/flat-ui.min.js') }}"></script>
+            <script src="{{ asset('assets/js/moment.min.js') }}"></script>
+            <script src="{{ asset('assets/js/locales.min.js') }}"></script>
+            <script src="{{ asset('assets/js/iziToast.min.js') }}"></script>
+            <script src="{{ asset('assets/js/bootstrap-datetimepicker.min.js') }}"></script>
+            <script src="{{ asset('assets/js/main.js') }}"></script>
+        {% endblock %}
+        {% block additionaljs %}
+        {% endblock %}
+        {% block popmsg %}
+            <script>
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    $(document).ready(function(){
+                        iziToast.show({
+                            message: '{{ flashMessage }}',
+                            color: 'red',
+                            position: 'topRight',
+                            transitionIn: 'fadeInDown',
+                            icon: 'fa fa-exclamation-triangle'
+                        });
+                    });
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('succ') %}
+                $(document).ready(function(){
+                    iziToast.show({
+                        message: '{{ flashMessage }}',
+                        color: 'green',
+                        position: 'topRight',
+                        transitionIn: 'fadeInDown',
+                        icon: 'fa fa-check'
+                    });
+                });
+                {% endfor %}
+            </script>
+        {% endblock %}
+    </body>
+</html>

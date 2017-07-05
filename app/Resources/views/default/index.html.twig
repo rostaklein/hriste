@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="step-title">O jaký typ hřiště máte zájem?</h4>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="btn-group sport-choose">
+                    {% for hriste in fields %}
+                        <div class="btn btn-primary {{ loop.first ? 'active' }}" data-field="{{ hriste.id }}"><i class="icon-{% if hriste.typ=="tenis" %}tennis-ball{% else %}volleyball{% endif %}"></i> {{ hriste.name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="step-title">V jaký datum a čas?</h4>
+                    <div id="datetimepicker12"></div>
+                    <input id="getTimetableUrl" type="hidden" value="{{ path('timetable') }}">
+                </div>
+                <div class="col-md-8 relative">
+                    <div id="times-loader" class="loader-overlay">
+                         <div class="spinner">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                    </div>
+                    <div id="enabled-times">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <input id="selectedTimesUrl" type="hidden" value="{{ path('selectedtimes') }}">
+        <div class="selected-times relative">
+            <div id="selected-times-loader" class="loader-overlay">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 pos-static">
+                    <div id="selected-times">
+                        {{ render(controller('AppBundle:Default:getSelectedTimes')) }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ path('step2') }}"><div class="btn btn-primary next-step">pokračovat <i class="fa fa-chevron-right"></i></div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{{ path('homepage') }}"><div class="btn btn-default next-step pull-left"><i class="fa fa-chevron-left"></i> výběr hřiště</div></a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ path('makereservation') }}"><div class="btn btn-primary next-step {{ continue ? "" : "disabled" }}"><i class="fa fa-check"></i> rezervovat</div></a>
+                </div>
+            </div>
+    </div>
+    {% if not app.user %}
+    <div class="container">
+        <h4 class="step-title margin-top-20">Na čí jméno máme rezervaci založit?</h4>
+        <div class="row login-choose">
+            <div class="col-md-4">
+                <h7>Přihlášení facebookem</h7>
+                <a href="{{ path('hwi_oauth_service_redirect', { 'service': 'facebook' }) }}"><div class="btn btn-default fb"><i class="fa fa-facebook-square"></i><span>přihlásit se Facebookem</span></div></a>
+            </div>
+            <div class="col-md-4">
+                <h7><i class="fa fa-user"></i> Přihlásit se účtem</h7>
+                <div class="log">
+                    <input type="hidden" id="login-path" value="{{ path('fos_user_security_check') }}">
+                    <form method="post" action="{{ path('fos_user_security_check') }}">
+                        <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.refreshToken('authenticate') }}" />
+                        <div class="form-group">
+                            <input type="text" id="username" name="_username" class="form-control" required="required" placeholder="Váš email"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" name="_password" class="form-control" required="required" placeholder="Heslo" />
+                        </div>
+                        <button type="submit" class="btn btn-default login-submit"><i class="fa fa-sign-in"></i> přihlásit se</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="reg">
+                    <h7><i class="fa fa-user-plus"></i> Registrovat se</h7>
+                    <form name="fos_user_registration_form" method="post" action="{{ path('fos_user_registration_register') }}" class="fos_user_registration_register">
+                        <div id="fos_user_registration_form">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <input placeholder="Jméno" class="form-control" type="text" id="fos_user_registration_form_fname" name="fos_user_registration_form[fname]" required="required">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <input placeholder="Příjmení" class="form-control" type="text" id="fos_user_registration_form_lname" name="fos_user_registration_form[lname]" required="required">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="Email" class="form-control" type="email" id="fos_user_registration_form_email" name="fos_user_registration_form[email]" required="required">
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="Telefon" class="form-control" type="text" id="fos_user_registration_form_phone" name="fos_user_registration_form[phone]">
+                            </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input placeholder="Heslo" class="form-control" type="password" id="fos_user_registration_form_plainPassword_first" name="fos_user_registration_form[plainPassword][first]" required="required">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input placeholder="Heslo znovu" class="form-control" type="password" id="fos_user_registration_form_plainPassword_second" name="fos_user_registration_form[plainPassword][second]" required="required">
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-default"><i class="fa fa-user-plus"></i> registrovat se</button>
+                        </div>
+                        <input type="hidden" id="fos_user_registration_form__token" name="fos_user_registration_form[_token]" value="{{ fos_csrf_provider.refreshToken('registration') }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="container">
+        <div class="user-confirm">
+            {% if not notset.validemail or not notset.validphone %}
+                <h5 class="continue info margin-top-20"><i class="fa fa-times"></i>Pro pokračování je třeba doplnit</h5>
+            <form method="post" action="{{ path('addPhoneEmail') }}">
+                <div class="row margin-top-20">
+                    {% if not notset.validemail %}
+                    <div class="form-group col-md-4">
+                        <input type="email" id="email" name="email" class="form-control" required="required" placeholder="Váš email"/>
+                    </div>
+                    {% endif %}
+                    {% if not notset.validphone %}
+                    <div class="form-group col-md-4">
+                        <input type="text" id="phone" name="phone" class="form-control" required="required" placeholder="Váš telefon" />
+                    </div>
+                    {% endif %}
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-check"></i> potvrdit</button>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+                <h5 class="continue succ margin-top-20">Rezervaci založíme na jméno</h5>
+                <div class="user-info">
+                    <div class="name"><i class="fa fa-user-o"></i>  {{ app.user.fname }} {{ app.user.lname }}</div>
+                    <div class="mail"><i class="fa fa-envelope-o"></i>  {{ app.user.email }}</div>
+                    <div class="phone"><i class="fa fa-phone"></i>  {{ app.user.phone }}</div>
+                </div>
+                <div>
+                    <div class="btn btn-default btn-sm margin-top-20 change-form"><i class="fa fa-pencil"></i> změnit údaje</div>
+                </div>
+                <form method="post" action="{{ path('addPhoneEmail') }}" id="change-form" style="display: none">
+                    <div class="row text-left margin-top-20">
+                            <div class="form-group col-md-3">
+                                <label>Jméno</label>
+                                <input type="text" id="fname" name="fname" class="form-control" required="required" placeholder="Jméno" value="{{ app.user.fname }}"/>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Příjmení</label>
+                                <input type="text" id="lname" name="lname" class="form-control" required="required" placeholder="Příjmení" value="{{ app.user.lname }}"/>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required="required" placeholder="Váš email" value="{{ app.user.email }}"/>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Telefon</label>
+                                <input type="text" id="phone" name="phone" class="form-control" required="required" placeholder="Váš telefon" value="{{ app.user.phone }}"/>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-default pull-right"><i class="fa fa-check"></i> potvrdit změny</button>
+                            </div>
+                    </div>
+                </form>
+            {% endif %}
+
+
+        </div>
+    </div>
+    {% endif %}
+    <div class="container">
+        <h5 class="margin-top-20">Vaše rezervace</h5>
+        <input id="selectedTimesUrl" type="hidden" value="{{ path('selectedtimes') }}">
+        <div id="selected-times-loader" class="loader-overlay">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+        <div id="selected-times" class="selected-times">
+            {{ render(controller('AppBundle:Default:getSelectedTimes', {'hideClearTimes': true})) }}
+        </div>
+    </div>
+    <div class="container">
+        <div class="row margin-top-20">
+            <div class="col-md-6">
+                <a href="{{ path('homepage') }}"><div class="btn btn-default next-step pull-left"><i class="fa fa-chevron-left"></i> výběr hřiště</div></a>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ path('makereservation') }}"><div class="btn btn-primary next-step {{ continue ? "" : "disabled" }}"><i class="fa fa-check"></i> rezervovat</div></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

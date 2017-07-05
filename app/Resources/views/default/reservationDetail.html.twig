@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Rezervace {{ code }}{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Kód vaší rezervace:</h6>
+                <div class="rescode">
+                    {{ code }}
+                </div>
+                <ul class="resdetails">
+                    <li><span><i class="fa fa-calendar-o"></i> Vytvořeno:</span>  {{ res.createdTime|localizeddate('long', 'none', 'cs') }} {{ res.createdTime|date('H:i') }}</li>
+                    <li><span><i class="fa fa-user"></i></span> {{ res.user.fname }} {{ res.user.lname }}</li>
+                    <li><span><i class="fa fa-envelope-o"></i></span> {{ res.user.email }}</li>
+                    <li><span><i class="fa fa-phone"></i></span> {{ res.user.phone }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                {% if res.confirmedTime %}
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Rezervace potvrzena <b>{{ res.confirmedTime|localizeddate('long', 'none', 'cs') }} {{ res.confirmedTime|date('H:i') }}</b>
+                    </div>
+                    <p class="text-left">Děkujeme za Vaši online rezervaci. Prosíme, <b>vyzvedněte si před časem který jste si objednali, klíče</b> od hřiště na naší recepci.</p>
+                    <div class="text-left">
+                        <a href="{{ path('resCancel', {'code': code}) }}"><div class="btn btn-default"><i class="fa fa-times"></i> zrušit rezervaci</div></a>
+                    </div>
+                {% elseif res.confirmToken %}
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle"></i> Vaše rezervace dosud nebyla potvrzena!<br>Na Vašem emailu najdete odkaz k potvrzení.
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle"></i> Rezervace zrušena.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="selected-times relative">
+            <div class="row">
+                <div class="col-md-12 pos-static">
+                    <div id="selected-times">
+                        {{ render(controller('AppBundle:DisplayReservation:displayReservationDetail', {'code': code})) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
