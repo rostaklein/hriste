@@ -4,6 +4,7 @@
     <table class="reslist">
         <thead>
             <th>kód rezervace</th>
+            <th>hřiště</th>
             <th>vytvořeno</th>
             <th>stav</th>
             <th>zákazník</th>
@@ -12,17 +13,18 @@
         {% for res in reservations|reverse %}
         <tr class="{{ res.confirmedTime ? '' : 'lighter'}}">
             <td><a href="{{ path('reservationDetail', {'code': res.code}) }}"><b>{{ res.code }}</b></a></td>
+            <td>{{ render(controller('AppBundle:ListReservation:getUniqueFields', { 'reservation': res })) }}</td>
             <td>{{ res.createdTime|localizeddate('long', 'none', 'cs') }} {{ res.createdTime|date('H:i') }}</td>
             <td>
                 {% if res.confirmedTime %}
-                    {{ res.confirmedTime|localizeddate('long', 'none', 'cs') }} {{ res.confirmedTime|date('H:i') }}
+                    <i class="fa fa-check"></i> Potvrzeno
                 {% elseif not res.confirmToken %}
                     <i class="fa fa-times"></i> Zrušeno
                 {% else %}
                     <i class="fa fa-times"></i> Dosud nepotvrzeno
                 {% endif %}
             </td>
-            <td>{{ res.user.fname }} {{ res.user.lname }} ({{ res.user.email }})</td>
+            <td>{{ res.user.fname }} {{ res.user.lname }}</td>
             <td><a href="{{ path('reservationDetail', {'code': res.code}) }}"><i class="fa fa-search"></i></a></td>
         </tr>
         {% endfor %}

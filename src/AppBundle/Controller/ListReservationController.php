@@ -46,4 +46,24 @@ class ListReservationController extends Controller
             'reservations' => $reservations
         ));
     }
+
+
+    /**
+     * @param $reservation
+     * @return string
+     */
+    public function getUniqueFieldsAction($reservation){
+        $reservations=$this->getDoctrine()->getRepository('AppBundle:Reservations')->findBy(array(
+            'reservation' => $reservation
+        ));
+        $fields=[];
+        foreach ($reservations as $reservation) {
+            array_push($fields, $reservation->getField());
+        }
+        $fields=array_unique($fields, SORT_REGULAR);
+        //dump($fields);
+        return $this->render(':default:uniqueFields.html.twig', array(
+            'fields' => $fields
+        ));
+    }
 }
