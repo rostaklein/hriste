@@ -46,12 +46,12 @@ class DefaultController extends Controller
 
         $disableddates=array();
         foreach ($confirmedtimes as $r){
-            $timeFrom=intval($r->getTimefrom()->format('G'));
-            $timeTo=intval($r->getTimeto()->format('G'));
-            for($i=$timeFrom;$i<$timeTo;$i++){
-                $disableddates[$i]=$r->getId();
-            }
+            $timeFrom=$r->getTimefrom()->format('G:i');
+            $id=$r->getId();
+            $disableddates[$id]=$timeFrom;
         }
+
+        dump($disableddates);
 
         $field=$this->getDoctrine()->getRepository('AppBundle:Fields')->find($field);
 
@@ -63,18 +63,32 @@ class DefaultController extends Controller
 
         foreach ($activedatessess as $active){
             if($active['field']->getId()==$field->getId() && $active['date']==$date){
-                $activedates[]=$active['timefrom']->format('G');
+                $activedates[]=$active['timefrom']->format('G:i');
             }
-        }
+        };
 
         $resInfo=array(
             'fieldname' => $field->getName(),
             'date' => $date
         );
 
+        $minhour=7;
+        $maxhour=22;
+        $possibletimes=array();
+        $interval=30;
+
+        $start=strtotime($minhour.':00');
+        $end=strtotime($maxhour.':00');
+
+        for ($i=$start;$i<=$end;$i = $i + $interval*60)
+        {
+            array_push($possibletimes, date('G:i',$i));
+        }
+
         return $this->render('default/timetable.html.twig', array(
             'disableddates' => $disableddates,
             'activedates' => $activedates,
+            'possibletimes' => $possibletimes,
             'resinfo' => $resInfo
         ));
     }
@@ -120,7 +134,7 @@ class DefaultController extends Controller
                 $this->get('session')->getFlashBag()->add('error', 'Nelze udělat rezervaci na čas, který už byl v minulosti.');
                 throw $this->createNotFoundException('Nelze provést operaci.');
             }
-            $timeto->modify('+ 1 hour');
+            $timeto->modify('+ 30 minutes');
 
 
             if (!isset($field)) {
@@ -170,6 +184,30 @@ class DefaultController extends Controller
                 }
             }
         }
+
+        /*$showtimes=array();
+        $changed=false;
+        if(!empty($selectedtimes)){
+            foreach($selectedtimes as $timeblock){
+                foreach($selectedtimes as $timeblock2){
+                    if($timeblock['timefrom']==$timeblock2['timeto']){
+                        $timeblock['timefrom']=$timeblock2['timefrom'];
+                        $changed=true;
+                    }
+                    if($timeblock['timeto']==$timeblock2['timefrom']){
+                        $timeblock['timeto']=$timeblock2['timeto'];
+                        $changed=true;
+                    }
+                }
+                if($changed){
+                    array_push($showtimes, $timeblock);
+                }
+
+            }
+        }
+
+        //$showtimes=$selectedtimes;
+        //dump($showtimes);*/
 
 
         return $this->render('default/selectedTimes.html.twig', array(

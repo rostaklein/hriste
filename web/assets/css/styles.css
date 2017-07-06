@@ -107,11 +107,12 @@ hr {
   display: inline-block;
   flex: 1;
   text-align: center;
-  padding: 10px 0;
+  padding: 5px 0;
   background-color: rgba(0, 0, 0, 0.1);
   position: relative;
   font-size: 14px;
   transition: all 0.3s ease;
+  line-height: 20px;
   border-right: solid 1px #dadada; }
   #enabled-times .time-cell:hover {
     background: #dadada;

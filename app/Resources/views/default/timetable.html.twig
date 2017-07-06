@@ -4,18 +4,20 @@
         <div class="date">{{ resinfo.date|localizeddate('full', 'none', 'cs') }}</div>
     </div>
     <div class="time-row">
-        {% for time in 7..21 %}
-            <span class="time-cell{% if time in disableddates|keys %} disabled{% endif %}{% if time in activedates %} active{% endif %}" data-timeStart="{{ time }}:00" data-timeEnd="{{ time+1 }}:00">
-                {% if time in disableddates|keys %}
-                    <span><i class="fa fa-times"></i> obsazeno</span>
-                {% else %}
-                    <span><i class="fa fa-check"></i> volno</span>
+        {% for time in possibletimes %}
+                {% if not loop.last %}
+                        <span class="time-cell{% if time in disableddates %} disabled{% endif %}{% if time in activedates %} active{% endif %}" data-timeStart="{{ time }}">
+                            {% if time in disableddates %}
+                                <span><i class="fa fa-times"></i> obsazeno</span>
+                            {% else %}
+                                <span><i class="fa fa-check"></i> volno</span>
+                            {% endif %}
+                        </span>
+                    {% if (loop.index%10==0) %}
+                        </div>
+                        <div class="time-row">
+                    {% endif %}
                 {% endif %}
-            </span>
-            {% if (time==11) or (time==16) %}
-    </div>
-    <div class="time-row">
-            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
