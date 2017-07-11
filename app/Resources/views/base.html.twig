@@ -17,7 +17,6 @@
             <link rel="stylesheet" href="{{ asset('assets/css/iziToast.min.css') }}">
             <link rel="stylesheet" href="{{ asset('assets/css/flat-ui.css') }}">
             <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
-            <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&amp;subset=latin-ext" rel="stylesheet">
         {% endblock %}
     </head>
     <body>
@@ -25,10 +24,10 @@
         {% block header %}
             <div class="container branding">
                 <div class="row">
-                    <div class="col-sm-7">
+                    <div class="col-sm-7 col-xs-6">
                         <h3>Rezervační systém sportovních hřišť</h3>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-5 col-xs-6">
                         <span class="user-panel">
                             {% if app.user %}
                                 <input type="hidden" id="logout-path" value="{{ path('fos_user_security_logout') }}">

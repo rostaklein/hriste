@@ -1,6 +1,8 @@
 @import url(fonts/style.css);
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700");
 body {
-  -webkit-font-smoothing: antialiased; }
+  -webkit-font-smoothing: antialiased;
+  font-family: Roboto, Arial, sans-serif; }
 
 p {
   font-size: 14px !important; }
@@ -18,7 +20,8 @@ article .container:last-child {
   padding-bottom: 30px; }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #24b24b; }
+  color: #24b24b;
+  font-family: Roboto, Arial, sans-serif; }
 
 header .logo-nav {
   padding-top: 20px; }
@@ -60,9 +63,15 @@ nav.main-nav ul {
   padding-top: 15px;
   font-size: 16px;
   font-weight: bold; }
+  @media (max-width: 550px) {
+    nav.main-nav ul {
+      text-align: left; } }
   nav.main-nav ul li {
     display: inline-block;
     margin-left: 15px; }
+    @media (max-width: 550px) {
+      nav.main-nav ul li {
+        display: block; } }
     nav.main-nav ul li i {
       margin-right: 5px;
       opacity: 0.5; }
@@ -97,23 +106,31 @@ hr {
 
 #enabled-times .time-row {
   position: relative;
-  padding: 20px 30px;
-  display: flex; }
+  padding: 0px 20px;
+  display: flex;
+  flex-wrap: wrap; }
   @media (max-width: 550px) {
     #enabled-times .time-row {
       padding-right: 15px;
       padding-left: 15px; } }
 #enabled-times .time-cell {
   display: inline-block;
-  flex: 1;
   text-align: center;
-  padding: 5px 0;
+  padding: 10px 0;
   background-color: rgba(0, 0, 0, 0.1);
   position: relative;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.3s ease;
   line-height: 20px;
+  flex-grow: 1;
+  width: 10%;
+  margin-top: 30px;
   border-right: solid 1px #dadada; }
+  @media (max-width: 550px) {
+    #enabled-times .time-cell {
+      width: 15%; } }
+  #enabled-times .time-cell i {
+    display: block; }
   #enabled-times .time-cell:hover {
     background: #dadada;
     transition: all 0.3s ease;

@@ -2,6 +2,8 @@
 $darkblue: #34495e;
 $green: #16a085;
 
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
+
 @mixin mobile {
   @media (max-width: 550px) {
     @content;
@@ -17,6 +19,7 @@ $green: #16a085;
 
 body{
   -webkit-font-smoothing: antialiased;
+  font-family: Roboto, Arial, sans-serif;
 }
 
 p{
@@ -41,6 +44,7 @@ article .container{
 
 h1, h2, h3, h4, h5, h6{
   color: #24b24b;
+  font-family: Roboto, Arial, sans-serif;
 }
 
 header{
@@ -91,11 +95,17 @@ nav.main-nav ul{
   margin: 0;
   padding: 0;
   text-align: right;
+  @include mobile{
+    text-align: left;
+  }
   padding-top: 15px;
   font-size: 16px;
   font-weight: bold;
   li{
     display: inline-block;
+    @include mobile{
+      display: block;
+    }
     margin-left: 15px;
     i{
       margin-right: 5px;
@@ -146,8 +156,9 @@ hr{
 #enabled-times{
   .time-row{
     position: relative;
-    padding: 20px 30px;
+    padding: 0px 20px;
     display: flex;
+    flex-wrap: wrap;
     @include mobile{
       padding-right: 15px;
       padding-left: 15px;
@@ -155,14 +166,22 @@ hr{
   }
   .time-cell{
     display: inline-block;
-    flex: 1;
     text-align: center;
-    padding: 5px 0;
+    padding: 10px 0;
     background-color: rgba(0,0,0,0.1);
     position: relative;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s ease;
     line-height: 20px;
+    flex-grow: 1;
+    width: 10%;
+    @include mobile{
+      width: 15%;
+    }
+    margin-top: 30px;
+    i{
+      display: block;
+    }
     &:hover{
       background: #dadada;
       transition: all 0.3s ease;
