@@ -20,7 +20,7 @@
                     <div class="alert alert-success">
                         <i class="fa fa-check"></i> Rezervace potvrzena <b>{{ res.confirmedTime|localizeddate('long', 'none', 'cs') }} {{ res.confirmedTime|date('H:i') }}</b>
                     </div>
-                    <p class="text-left">Děkujeme za Vaši online rezervaci. Prosíme, <b>vyzvedněte si před časem který jste si objednali, klíče</b> od hřiště na naší recepci.</p>
+                    <p class="text-left">Děkujeme za Vaši online rezervaci.  Prosím, <b>vyzvedněte si před časem, který jste si objednali, klíče</b> od hřiště na naší recepci. </p>
                     <div class="text-left">
                         <a href="{{ path('resCancel', {'code': code}) }}"><div class="btn btn-default"><i class="fa fa-times"></i> zrušit rezervaci</div></a>
                     </div>

@@ -51,7 +51,7 @@ class DefaultController extends Controller
             $disableddates[$id]=$timeFrom;
         }
 
-        dump($disableddates);
+        //dump($disableddates);
 
         $field=$this->getDoctrine()->getRepository('AppBundle:Fields')->find($field);
 

@@ -135,7 +135,7 @@ class MakeReservationController extends Controller
                 'code' => $code
             )));
         }else{
-            $this->get('session')->getFlashBag()->add('succ', 'Rezervace úspěšne potvrzena');
+            $this->get('session')->getFlashBag()->add('succ', 'Rezervace úspěšně potvrzena');
             $now= new \DateTime();
             $em = $this->getDoctrine()->getManager();
             $reservation->setConfirmedTime($now);
