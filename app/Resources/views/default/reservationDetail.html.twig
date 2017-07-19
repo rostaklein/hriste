@@ -10,10 +10,26 @@
                 </div>
                 <ul class="resdetails">
                     <li><span><i class="fa fa-calendar-o"></i> Vytvořeno:</span>  {{ res.createdTime|localizeddate('long', 'none', 'cs') }} {{ res.createdTime|date('H:i') }}</li>
-                    <li><span><i class="fa fa-user"></i></span> {{ res.user.fname }} {{ res.user.lname }}</li>
-                    <li><span><i class="fa fa-envelope-o"></i></span> {{ res.user.email }}</li>
-                    <li><span><i class="fa fa-phone"></i></span> {{ res.user.phone }}</li>
+                    {% if res.onlyName %}
+                        <li><span><i class="fa fa-user"></i></span> {{ res.onlyName }}</li>
+                    {% else %}
+                        <li><span><i class="fa fa-user"></i></span> {{ res.user.fname }} {{ res.user.lname }}</li>
+                        <li><span><i class="fa fa-envelope-o"></i></span> {{ res.user.email }}</li>
+                        <li><span><i class="fa fa-phone"></i></span> {{ res.user.phone }}</li>
+                    {% endif %}
                 </ul>
+                {% if is_granted("ROLE_ADMIN") %}
+                <form method="post" action="{{ path('resChangeName', {'code': code}) }}">
+                    <div class="row margin-top-20">
+                        <div class="col-md-9">
+                            <input type="text" id="name" name="name" class="form-control" required="required" placeholder="Změnit jméno zákazníka"/>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-default"><i class="fa fa-check"></i> potvrdit</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </div>
             <div class="col-md-6">
                 {% if res.confirmedTime %}
@@ -22,7 +38,7 @@
                     </div>
                     <p class="text-left">Děkujeme za Vaši online rezervaci.  Prosím, <b>vyzvedněte si před časem, který jste si objednali, klíče</b> od hřiště na naší recepci. </p>
                     <div class="text-left">
-                        <a href="{{ path('resCancel', {'code': code}) }}"><div class="btn btn-default"><i class="fa fa-times"></i> zrušit rezervaci</div></a>
+                        <a href="{{ path('resCancel', {'code': code}) }}"><div class="btn btn-default btn-sm"><i class="fa fa-times"></i> zrušit rezervaci</div></a>
                     </div>
                 {% elseif res.confirmToken %}
                     <div class="alert alert-danger">

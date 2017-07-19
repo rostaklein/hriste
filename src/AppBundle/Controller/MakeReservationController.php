@@ -49,6 +49,32 @@ class MakeReservationController extends Controller
         $confirmToken=md5($resCode);
 
         $parentreservation->setCode($resCode)->setCreatedTime($now)->setUser($this->getUser())->setConfirmToken($confirmToken);
+
+        if($this->isGranted('ROLE_ADMIN')){
+            $now= new \DateTime();
+            $parentreservation->setConfirmedTime($now);
+        }else{
+            //odeslání confirm emailu
+            $message = new \Swift_Message('Potvrzení rezervace '.$resCode);
+            $message
+                ->setFrom('moravacamp@mohelnickesluzby.cz')
+                ->setTo(['moravacamp@mohelnickesluzby.cz', $this->getUser()->getEmail()])
+                //->setTo(['rostaklein@gmail.com'])
+                ->setBody(
+                    $this->renderView(
+                    // app/Resources/views/Emails/registration.html.twig
+                        ':emails:confirmEmail.html.twig',
+                        array(
+                            'confirmToken' => $confirmToken,
+                            'code' => $resCode
+                        )
+                    ),
+                    'text/html'
+                )
+            ;
+            $this->get('mailer')->send($message);
+        }
+
         $em->persist($parentreservation);
 
         //přiřazení jednotlivých časových oken k parentu
@@ -76,34 +102,6 @@ class MakeReservationController extends Controller
 
 
         }
-        //odeslání confirm emailu
-
-        $message = new \Swift_Message('Potvrzení rezervace '.$resCode);
-        $message
-        ->setFrom('moravacamp@mohelnickesluzby.cz')
-        //->setTo(['moravacamp@mohelnickesluzby.cz', $this->getUser()->getEmail()])
-        ->setTo(['rostaklein@gmail.com'])
-        ->setBody(
-                $this->renderView(
-                // app/Resources/views/Emails/registration.html.twig
-                    ':emails:confirmEmail.html.twig',
-                    array(
-                        'confirmToken' => $confirmToken,
-                        'code' => $resCode
-                    )
-                ),
-                'text/html'
-            )
-        ;
-
-        /*$transport = \Swift_SmtpTransport::newInstance('smtp-69191.m91.wedos.net', 587, 'tls')
-            ->setUsername('moravacamp@mohelnickesluzby.cz')
-            ->setPassword('Kemp2017.')
-            ->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false)));
-
-        $mailer = new \Swift_Mailer($transport);
-        $mailer->send($message);*/
-        $this->get('mailer')->send($message);
 
         //vyprázdnění session
         $this->get('session')->set('selectedtimes', '');
@@ -147,5 +145,26 @@ class MakeReservationController extends Controller
             'res' => $reservation,
             'code' => $code
         ));
+    }
+
+
+    /**
+     * @param $code
+     * @param Request $request
+     * @Route("/reservation/{code}/changename", name="resChangeName")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function resChangeNameAction($code, Request $request){
+        $name=$request->get("name");
+        $res = $this->getDoctrine()->getRepository('AppBundle:Reservation')->findOneBy(['code' => $code]);
+        $res->setOnlyName($name);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($res);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('reservationDetail',array(
+            'code' => $code
+        )));
     }
 }

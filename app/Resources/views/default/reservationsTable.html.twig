@@ -24,7 +24,13 @@
                     <i class="fa fa-times"></i> Dosud nepotvrzeno
                 {% endif %}
             </td>
-            <td>{{ res.user.fname }} {{ res.user.lname }}</td>
+            <td>
+                {% if res.onlyName %}
+                    {{ res.onlyName }}
+                {% else %}
+                    {{ res.user.fname }} {{ res.user.lname }}
+                {% endif %}
+            </td>
             <td><a href="{{ path('reservationDetail', {'code': res.code}) }}"><i class="fa fa-search"></i></a></td>
         </tr>
         {% endfor %}

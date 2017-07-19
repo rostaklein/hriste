@@ -55,11 +55,34 @@ class Reservation
     private $createdTime;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="confirmedTime", type="datetime", nullable=true)
-     */
+ * @var \DateTime
+ *
+ * @ORM\Column(name="confirmedTime", type="datetime", nullable=true)
+ */
     private $confirmedTime;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="onlyName", type="string", length=20, nullable=true)
+     */
+    private $onlyName;
+
+    /**
+     * @return string
+     */
+    public function getOnlyName()
+    {
+        return $this->onlyName;
+    }
+
+    /**
+     * @param string $onlyName
+     */
+    public function setOnlyName($onlyName)
+    {
+        $this->onlyName = $onlyName;
+    }
 
 
 
