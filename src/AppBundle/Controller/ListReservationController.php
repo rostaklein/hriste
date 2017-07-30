@@ -21,18 +21,29 @@ class ListReservationController extends Controller
             $reservations=$this->getDoctrine()->getRepository('AppBundle:Reservation')->findAll();
         }elseif($time=="confirmed"){
             $reservations=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findAllConfirmed();
-        }elseif($time="yesterday"){
+        }elseif($time=="yesterday"){
             $date=new \DateTime('-1 days');
             $reservations=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findAllWithDate($date->format('Y-m-d'));
-            $parent=array();
-            foreach($reservations as $res){
-                array_push($parent, $res->getReservation());
-            }
-            $reservations=$parent;
+        }elseif($time=="today"){
+            $date=new \DateTime();
+            $reservations=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findAllWithDate($date->format('Y-m-d'));
+        }elseif($time=="futureconfirmed"){
+            $reservations=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findFutureReservations();
         }
 
+        $distinctfields=[];
+        $distinctdates=[];
+        foreach ($reservations as $res){
+            $distinctfields[$res->getId()]=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findDistinctFields($res);
+            $distinctdates[$res->getId()]=$this->getDoctrine()->getManager()->getRepository('AppBundle:Reservation')->findDistinctTimes($res);
+        }
+
+        dump($distinctdates);
+
         return $this->render(':default:listRes.html.twig',array(
-            'reservations' => $reservations
+            'reservations' => $reservations,
+            'distinctfields' => $distinctfields,
+            'distinctdates' => $distinctdates
         ));
     }
 

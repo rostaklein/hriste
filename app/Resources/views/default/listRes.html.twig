@@ -3,14 +3,63 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <a href="{{ path('listReservations', { 'time': "all" }) }}"><div class="btn btn-default">všechny rezervace</div></a>
-                <a href="{{ path('listReservations', { 'time': "confirmed" }) }}"><div class="btn btn-default">všechny potvrzené rezervace</div></a>
-                <a href="{{ path('listReservations', { 'time': "yesterday" }) }}"><div class="btn btn-default">včerejší rezervace</div></a>
+                <a href="{{ path('listReservations', { 'time': "all" }) }}"><div class="btn btn-sm btn-default">všechny rezervace</div></a>
+                <a href="{{ path('listReservations', { 'time': "futureconfirmed" }) }}"><div class="btn btn-sm btn-default">všechny budoucí potvrzené</div></a>
+                <a href="{{ path('listReservations', { 'time': "today" }) }}"><div class="btn btn-sm btn-default">dnešní rezervace</div></a>
+                <a href="{{ path('listReservations', { 'time': "yesterday" }) }}"><div class="btn btn-sm btn-default">včerejší rezervace</div></a>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                {{ render(controller('AppBundle:ListReservation:makeReservationsTable', { 'reservations': reservations })) }}
+                {% if reservations is empty %}
+                    <div class="alert alert-warning text-center" style="margin-top: 20px;">
+                        <p><i class="fa fa-times"></i> Žádná rezervace nevyhovuje výběru.</p>
+                    </div>
+                {% else %}
+                    <table class="reslist">
+                        <thead>
+                        <th>kód rezervace</th>
+                        <th>hřiště</th>
+                        <th>rezervováno na</th>
+                        <th>stav</th>
+                        <th>zákazník</th>
+                        <th>detail</th>
+                        </thead>
+                        {% for res in reservations|reverse %}
+                            <tr class="{{ res.confirmedTime ? '' : 'lighter'}}">
+                                <td><a href="{{ path('reservationDetail', {'code': res.code}) }}"><b>{{ res.code }}</b></a></td>
+                                <td>{% for key, respar in distinctfields if key==res.id%}
+                                        {% for field in respar  %}
+                                            {{ field.field.name }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}</td>
+                                <td>{% for key, dates in distinctdates if key==res.id%}
+                                        {% for date in dates  %}
+                                            {{ date.date|localizeddate('long', 'none', 'cs') }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if res.confirmedTime %}
+                                        <i class="fa fa-check"></i> Potvrzeno
+                                    {% elseif not res.confirmToken %}
+                                        <i class="fa fa-times"></i> Zrušeno
+                                    {% else %}
+                                        <i class="fa fa-times"></i> Dosud nepotvrzeno
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if res.onlyName %}
+                                        {{ res.onlyName }}
+                                    {% else %}
+                                        {{ res.user.fname }} {{ res.user.lname }}
+                                    {% endif %}
+                                </td>
+                                <td><a href="{{ path('reservationDetail', {'code': res.code}) }}"><i class="fa fa-search"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>
